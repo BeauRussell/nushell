@@ -1,0 +1,103 @@
+sudo chsh -s /bin/nu beau
+clear
+echo $SHELL
+sudo chsh -s /snap/bin/nu beau
+chsh
+sudo chsh
+chsh
+sudo chsh
+flatpak run com.Jagex.launcher
+flatpak run com.jagex.Launcher
+ls /bin | where name -= nu
+ls /bin | where name -= 'nu'
+ls /bin | where name =~ 'nu'
+ls ~/Documents/repos/Interpreter/parser | where name =~ .go
+flatpak run com.jagex.Launcher
+neovim .
+sudo apt install neovim
+nvim .
+nvim ~/.config/nvim/
+nvim ~/.config/nvim/.
+git config
+git config user.name
+git config user.email
+nvim ~/.config/nvim/.
+cd Documents/repos
+nvim ~/.config/nvim/.
+find ~/.local -type d name lazy
+find ~/.local -t d name lazy
+find ~/.local --type d name lazy
+find ~/.local --type d --namename lazy
+find ~/.local lazy
+nvim ~/.config/nvim/.
+cd ~/.config/nvim
+git init
+git remote add origin git@github.com:BeauRussell/nvim.git
+git branch -M main
+git push
+git push --set-upstream origin main
+git status
+git add .
+git commit -m "Initial commit"
+git push --set-upstream origin main
+gstat
+nu --version
+nu_plugin_gstat
+nu oh-my-nu
+source oh-my-nu
+source oh-my.nu
+source oh-my
+help shells
+cd nu_scripts/modules/prompt/
+nu oh-my-nu
+source oh-my-v2.nu
+nu oh-my-v2.nu
+cd ../../..
+cd repos/
+cd Interpreter/
+nu oh-my-v2.nu
+nu ../../nu_scripts/modules/prompt/oh-my-v2.nu
+cd ~/.config
+ls
+cd nushell/
+ls
+nvim config.nu
+nvim env.nu
+cargo install ~/Documents/nu_scripts/modules/prompt/oh-my-my-v2.nu
+sudo apt install cargo
+cargo install ~/Documents/nu_scripts/modules/prompt/oh-my-my-v2.nu
+nvim env.nu
+cd ~/.config/nushell/
+nvim env.nu
+cd ~/.config/nvim/
+nvim env.nu
+cd ../nushell/
+ls
+nvim .
+curl -s https://ohmyposh.dev/install.sh | bash -s
+oh-my-posh
+~/.local/bin/oh-my-posh
+~/.local/bin/oh-my-posh font install meslo
+~/.local/bin/oh-my-posh init nu --config ~/.poshthemes/meslo.omp.json
+source ~/.oh-my-posh.nu
+nvim ~/.poshthemes/.
+rm =rf ~/.poshthemes
+rm -rf ~/.poshthemes
+~/.local/bin/oh-my-posh init nu
+source ~/.oh-my-posh.nu
+cd repos/Interpreter/
+cd ~/.config/nushell
+nvim .
+source ~/.oh-my-posh.nu
+source ~/.config/nushell/oh-my-v2.nu
+cd ~/.config/nushell
+nvim .
+cd ~/.config/nvim/
+cd ../nushell/
+ls
+rm -rf oh-my-v2.nu
+nvim .
+oh-my-posh
+cd ~/.config/nushell
+git init
+git remote add origin git@github.com:BeauRussell/nu_config.git<\n>git branch -M main<\n>git push -u origin main
