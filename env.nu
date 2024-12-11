@@ -91,6 +91,8 @@ $env.NU_PLUGIN_DIRS = [
 # $env.PROMPT_COMMAND_RIGHT = { (get_prompt 8bit).right_prompt }
 # $env.PROMPT_INDICATOR = { "" }
 
+alias vi = nvim
+alias vim = nvim
 source ~/.oh-my-posh.nu
 $env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin")
 
