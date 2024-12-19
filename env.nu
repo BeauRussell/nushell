@@ -94,7 +94,7 @@ $env.NU_PLUGIN_DIRS = [
 alias vi = nvim
 alias vim = nvim
 source ~/.oh-my-posh.nu
-$env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin")
+$env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin")
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
