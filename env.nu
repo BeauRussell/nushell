@@ -93,13 +93,8 @@ $env.NU_PLUGIN_DIRS = [
 
 alias vi = nvim
 alias vim = nvim
-<<<<<<< Updated upstream
 source .oh-my-posh.nu
 $env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin" | append "/opt/homebrew/bin/brew")
-=======
-#source .oh-my-posh.nu
-$env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin")
->>>>>>> Stashed changes
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
