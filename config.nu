@@ -225,7 +225,6 @@ $env.config = {
     }
 
     filesize: {
-		unit: "binary"
     }
 
     cursor_shape: {

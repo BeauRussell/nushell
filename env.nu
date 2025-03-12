@@ -95,7 +95,7 @@ alias zip = /usr/bin/zip
 alias vi = nvim
 alias vim = nvim
 $env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin" | append "/opt/homebrew/bin" | append "~/.turso" | append "~/odin" | append "/usr/local/bin")
-$env.EDITOR = code
+$env.EDITOR = "code"
 
 source .oh-my-posh.nu
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
