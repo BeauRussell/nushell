@@ -94,7 +94,7 @@ $env.NU_PLUGIN_DIRS = [
 alias zip = /usr/bin/zip
 alias vi = nvim
 alias vim = nvim
-$env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin" | append "/opt/homebrew/bin" | append "~/.turso" | append "~/odin" | append "/usr/local/bin")
+$env.PATH = ($env.PATH | $env.PATH | split row (char esep) | append "~/.local/bin" | append "~/go/bin" | append "/opt/homebrew/bin" | append "~/.turso" | append "~/odin" | append "/usr/local/bin" | append "/Users/beaurussell/Library/Python/3.9/bin")
 $env.EDITOR = "code"
 
 source .oh-my-posh.nu
