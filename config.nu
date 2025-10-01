@@ -895,3 +895,47 @@ $env.config = {
         }
     ]
 }
+
+# --- fnm on macOS ARM (Apple Silicon) ---
+
+# Ensure Homebrew bin is on PATH (Apple Silicon default prefix)
+let hb = "/opt/homebrew/bin"
+if not ($env.PATH | split row (char esep) | any {|p| $p == $hb }) {
+  let-env PATH = ($env.PATH | split row (char esep) | prepend $hb | str join (char esep))
+}
+
+# Add fnm shims directory to PATH so the selected Node is used
+let fnm_dir = ($env.HOME | path join ".fnm")
+if not ($env.PATH | split row (char esep) | any {|p| $p == ($fnm_dir | path expand) }) {
+  let-env PATH = ($env.PATH | split row (char esep) | prepend ($fnm_dir | path expand) | str join (char esep))
+}
+
+# Auto-use .nvmrc/.node-version on directory change (and install if missing)
+$env.config = (
+  $env.config
+  | default {}
+  | update hooks ( $in.hooks | default {} )
+  | update hooks.env_change (
+      ($in.hooks.env_change | default {})
+      | update PWD (
+          (
+            $in.hooks.env_change.PWD | default []
+          ) ++ [
+            { |before, after|
+                # If the target directory has .nvmrc or .node-version, switch Node
+                let has_file = (
+                  [".nvmrc", ".node-version"]
+                  | any {|f| ([$after $f] | path join | path exists) }
+                )
+                if $has_file {
+                  ^fnm use --install-if-missing
+                }
+            }
+          ]
+        )
+    )
+)
+
+# Optional: set a default Node when no .nvmrc is present (uncomment the line below after you install one)
+^fnm default 22
+
