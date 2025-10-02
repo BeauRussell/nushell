@@ -901,41 +901,46 @@ $env.config = {
 # Ensure Homebrew bin is on PATH (Apple Silicon default prefix)
 let hb = "/opt/homebrew/bin"
 if not ($env.PATH | split row (char esep) | any {|p| $p == $hb }) {
-  let-env PATH = ($env.PATH | split row (char esep) | prepend $hb | str join (char esep))
+  $env.PATH = (
+    [$hb]
+    ++ ($env.PATH | split row (char esep))
+    | str join (char esep)
+  )
 }
 
-# Add fnm shims directory to PATH so the selected Node is used
-let fnm_dir = ($env.HOME | path join ".fnm")
-if not ($env.PATH | split row (char esep) | any {|p| $p == ($fnm_dir | path expand) }) {
-  let-env PATH = ($env.PATH | split row (char esep) | prepend ($fnm_dir | path expand) | str join (char esep))
+let fnm_alias = ($env.HOME | path join ".local/share/fnm/aliases/default/bin" | path expand)
+if not ($env.PATH | split row (char esep) | any {|p| $p == $fnm_alias }) {
+  $env.PATH = (
+    [$fnm_alias]
+    ++ ($env.PATH | split row (char esep))
+    | str join (char esep)
+  )
 }
 
-# Auto-use .nvmrc/.node-version on directory change (and install if missing)
-$env.config = (
-  $env.config
-  | default {}
-  | update hooks ( $in.hooks | default {} )
-  | update hooks.env_change (
-      ($in.hooks.env_change | default {})
-      | update PWD (
-          (
-            $in.hooks.env_change.PWD | default []
-          ) ++ [
-            { |before, after|
-                # If the target directory has .nvmrc or .node-version, switch Node
-                let has_file = (
-                  [".nvmrc", ".node-version"]
-                  | any {|f| ([$after $f] | path join | path exists) }
-                )
-                if $has_file {
-                  ^fnm use --install-if-missing
-                }
-            }
-          ]
-        )
-    )
-)
+# --- Append .nvmrc/.node-version PWD hook (merge-safe, after $env.config is set) ---
+let cfg      = ($env.config | default {})
+let hooks    = ($cfg | get -i hooks | default {})
+let envchg   = ($hooks | get -i env_change | default {})
+let pwd_list = ($envchg | get -i PWD | default [])
 
-# Optional: set a default Node when no .nvmrc is present (uncomment the line below after you install one)
-^fnm default 22
+let new_pwd_list = ($pwd_list ++ [
+  { |before, after|
+      let nvmrc   = ($after | path join ".nvmrc")
+      let nodever = ($after | path join ".node-version")
+
+      if ($nvmrc | path exists) {
+        let ver = (open $nvmrc | str trim | str replace -a 'v' '' | str trim)
+        ^fnm install $ver
+        ^fnm default $ver
+      } else if ($nodever | path exists) {
+        let ver = (open $nodever | str trim | str replace -a 'v' '' | str trim)
+        ^fnm install $ver
+        ^fnm default $ver
+      }
+    }
+])
+
+let new_envchg = ($envchg | upsert PWD $new_pwd_list)
+let new_hooks  = ($hooks  | upsert env_change $new_envchg)
+$env.config    = ($cfg    | upsert hooks $new_hooks)
 
