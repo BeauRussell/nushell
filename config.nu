@@ -898,49 +898,37 @@ $env.config = {
 
 # --- fnm on macOS ARM (Apple Silicon) ---
 
-# Ensure Homebrew bin is on PATH (Apple Silicon default prefix)
-let hb = "/opt/homebrew/bin"
-if not ($env.PATH | split row (char esep) | any {|p| $p == $hb }) {
+# --- PATH: fnm alias first, keep Homebrew, drop other fnm paths ---
+export-env {
+  let sep   = (char esep)
+  let alias = ($env.HOME | path join ".local/share/fnm/aliases/default/bin" | path expand)
+  let hb    = "/opt/homebrew/bin"
+  let ulb   = "/usr/local/bin"  # harmless to include; helps non-Brew installs
+
   $env.PATH = (
-    [$hb]
-    ++ ($env.PATH | split row (char esep))
-    | str join (char esep)
+    # Put the important ones first (dedup later)
+    [$alias, $hb, $ulb]
+    ++ (
+      $env.PATH
+      | split row $sep
+      | where {|p|
+          not ($p | str contains "/fnm/")  # drop any old fnm/multishells
+          and $p != $hb
+          and $p != $alias
+          and $p != $ulb
+        }
+    )
+    | uniq
+    | str join $sep
   )
+# Manually apply .nvmrc / .node-version in the current directory
+def --env use-nvmrc [] {
+  let f1 = ($env.PWD | path join ".nvmrc")
+  let f2 = ($env.PWD | path join ".node-version")
+  let raw = if ($f1 | path exists) { open $f1 } else if ($f2 | path exists) { open $f2 } else { "" }
+  let ver = ($raw | str trim | str replace -a 'v' '' | str trim)
+  if ($ver | is-not-empty) {
+    do -i { ^fnm install $ver }
+    do -i { ^fnm default $ver }
+  }
 }
-
-let fnm_alias = ($env.HOME | path join ".local/share/fnm/aliases/default/bin" | path expand)
-if not ($env.PATH | split row (char esep) | any {|p| $p == $fnm_alias }) {
-  $env.PATH = (
-    [$fnm_alias]
-    ++ ($env.PATH | split row (char esep))
-    | str join (char esep)
-  )
-}
-
-# --- Append .nvmrc/.node-version PWD hook (merge-safe, after $env.config is set) ---
-let cfg      = ($env.config | default {})
-let hooks    = ($cfg | get -i hooks | default {})
-let envchg   = ($hooks | get -i env_change | default {})
-let pwd_list = ($envchg | get -i PWD | default [])
-
-let new_pwd_list = ($pwd_list ++ [
-  { |before, after|
-      let nvmrc   = ($after | path join ".nvmrc")
-      let nodever = ($after | path join ".node-version")
-
-      if ($nvmrc | path exists) {
-        let ver = (open $nvmrc | str trim | str replace -a 'v' '' | str trim)
-        ^fnm install $ver
-        ^fnm default $ver
-      } else if ($nodever | path exists) {
-        let ver = (open $nodever | str trim | str replace -a 'v' '' | str trim)
-        ^fnm install $ver
-        ^fnm default $ver
-      }
-    }
-])
-
-let new_envchg = ($envchg | upsert PWD $new_pwd_list)
-let new_hooks  = ($hooks  | upsert env_change $new_envchg)
-$env.config    = ($cfg    | upsert hooks $new_hooks)
-
